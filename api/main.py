@@ -26,11 +26,6 @@ def index():
 def api_test():
     return test_f()
 
-@app.post('/swg')
-async def swagger_test(msg: str, data: DataInput):
-    res = {'hello': 'world', 'hi': 'world', 'msg': msg, 'name': data.name}
-    return res
-
 @app.get('/get-headline')
 def get_headline():
     naver = get_headline_naver()
