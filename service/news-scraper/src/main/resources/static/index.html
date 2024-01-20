@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #121212; /* 배경을 어두운 색상으로 설정 */
+            color: #ffffff; /* 글자 색상을 흰색으로 설정 */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* 글자 폰트 변경 */
+        }
+        a {
+            color: #1abc9c !important; /* 링크 색상을 밝은 색상으로 설정 */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #ffffff; /* 제목 글자 색상을 흰색으로 설정 */
+        }
+        #app h1 {
+            cursor: pointer;
+        }
+        #app {
+            margin-top: 4rem;
+        }
+        .search-result {
+            color: gray;
+            padding: 20px;
+        }
+    </style>
+    <title>Headline Hub</title>
+</head>
+<body>
+    <div id="app" class="container mt-4">
+        <h1 @click="location.reload()" class="mb-4">Headline Hub</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Top Headlines</h2>
+                <ul class="list-group">
+                    <li v-for="headline in headlines" :key="headline.title"  class="list-group-item d-flex justify-content-between align-items-center">
+                        <a :href="headline.link" class="text-decoration-none text-dark"><strong>{{ headline.title }}</strong></a>
+                        <a :href="headline.link"><img v-if="headline.img" :src="headline.img" alt="Headline Image" class="img-fluid mt-2" style="max-height: 100px; max-width: 100%;"></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h2>Search News</h2>
+                <input type="text" v-model="keyword" @keyup.enter="searchNews" class="form-control mb-2" placeholder="Enter keyword">
+                <button @click="searchNews" class="btn btn-primary">Search</button>
+                <h3 class="mt-4">Search Results</h3>
+                <ul>
+                    <li v-for="result in searchResults" :key="result.title" class="search-result">
+                        <a :href="result.link" class="text-decoration-none"><strong>{{ result.title }}</strong></a>
+                        <a :href="result.link"><img v-if="result.img" :src="result.img" alt="Headline Image" class="img-fluid mt-2" style="max-height: 100px; max-width: 100%;"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                headlines: [],
+                keyword: '',
+                searchResults: []
+            },
+            mounted() {
+                // 뉴스 헤드라인 가져오기
+                this.fetchHeadlines();
+            },
+            methods: {
+                async fetchHeadlines() {
+                    const response = await fetch('http://127.0.0.1:8000/get-headline')
+                    const data = await response.json()
+                    this.headlines = data.headlines
+                },
+                async searchNews() {
+                    const response = await fetch('http://127.0.0.1:8000/search-news?keyword=' + this.keyword)
+                    const data = await response.json()
+                    this.searchResults = data.searchresults
+                }
+            }
+        });
+    </script>
+</body>
+</html>
