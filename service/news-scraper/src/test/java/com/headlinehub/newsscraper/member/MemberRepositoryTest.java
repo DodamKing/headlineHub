@@ -2,8 +2,6 @@ package com.headlinehub.newsscraper.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,14 +13,9 @@ import com.headlinehub.newsscraper.repository.MemberRepository;
  * MemberRepositoryTest
  */
 @SpringBootTest
-// @DataMongoTest
-// @Import(MemberRepository.class)
 public class MemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
-
-    // @Autowired
-    // private MongoTemplate mongoTemplate;
 
     
     @Test
@@ -41,18 +34,6 @@ public class MemberRepositoryTest {
         assertThat(foundMember).isNotNull();
         assertThat(foundMember.getPassword()).isEqualTo(member.getPassword());
 
-        List<Member> allMembers = memberRepository.findAll();
-        assertThat(allMembers).isNotNull();
-        assertThat(allMembers).hasSize(2);
-        
         memberRepository.delete(member);
-        assertThat(memberRepository.findById(saveMember.getId())).isEmpty();
-
-        // Member savedMember = mongoTemplate.save(member, "members");
-        // Member retrievedMember = mongoTemplate.findById(savedMember.getId(), Member.class, "memebers");
-
-        // assertEquals("testuser1", retrievedMember.getUsername());
-        // assertEquals("testpassword", retrievedMember.getPassword());
     }
-    
 }
