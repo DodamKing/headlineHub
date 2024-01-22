@@ -27,11 +27,23 @@
             color: gray;
             padding: 20px;
         }
+        .login-button {
+            margin-left: auto; /* 우측으로 정렬 */
+        }
+        @media (max-width: 767px) {
+            .login-button {
+                margin-top: 1rem; /* 작은 화면에서는 위로 조금 이동 */
+                margin-left: 0; /* 좌측 정렬 */
+            }
+        }
     </style>
     <title>Headline Hub</title>
 </head>
 <body>
     <div id="app" class="container mt-4">
+        <div class="d-flex justify-content-end login-button">
+            <button type="button" class="btn btn-outline-light" @click="redirectToLogin">로그인</button>
+        </div>
         <h1 @click="location.reload()" class="mb-4">Headline Hub</h1>
         <div class="row">
             <div class="col-md-6">
@@ -81,6 +93,9 @@
                     const response = await fetch('http://127.0.0.1:8000/search-news?keyword=' + this.keyword)
                     const data = await response.json()
                     this.searchResults = data.searchresults
+                },
+                redirectToLogin() {
+                    window.location.href = '/login';
                 }
             }
         });
