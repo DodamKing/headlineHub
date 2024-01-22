@@ -8,6 +8,7 @@ class NewsScraperApplicationTests {
 
 	@Test
 	void contextLoads() {
+		
 	}
 
 }

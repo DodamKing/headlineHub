@@ -6,6 +6,6 @@ import com.headlinehub.newsscraper.model.Member;
 
 public interface MemberService {
     void saveMember(Member member);
-    Member findByUsername(String username);
+    Member findByUserId(String userId);
     List<Member> findAllUser();
 }

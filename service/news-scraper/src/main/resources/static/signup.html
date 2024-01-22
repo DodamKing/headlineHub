@@ -57,7 +57,7 @@
                 <input type="text" class="form-control" id="verificationCode" v-model="verificationCode" placeholder="Enter verification code">
                 <button type="button" class="btn btn-secondary mt-2" @click="checkVerificationCode()">인증코드 확인</button>
             </div>
-            <button type="submit" :disabled="isDisabled()" class="btn btn-primary w-100">Sign Up</button>
+            <button type="button" :disabled="isDisabled()" @click="handleSubmit()" class="btn btn-primary w-100">Sign Up</button>
             <div class="d-grid mt-3">
                 <a href="/" class="btn btn-secondary">Go Back</a>
             </div>
@@ -82,6 +82,8 @@
             passwordsMatch: true,
             isValidateId: true,
             isDuplicateId: true,
+            sendCode: '',
+            isVerificationCode: false,
         },
         methods: {
             validateId() {
@@ -89,31 +91,60 @@
                 this.isValidateId = regex.test(this.userId)
             },
             async checkDuplicate() {
-                // 아이디 중복 확인 로직 작성
-                // 서버로 아이디를 전송하여 중복 여부를 확인하고 결과를 사용자에게 표시
-                const response = await fetch('/api/auth/check-duplicate-id')
+                if (!this.userId) return alert('아이디를 입력해 주세요.')
+                const response = await fetch('/api/auth/check-duplicate-id?userId=' + this.userId)
                 const isDuplicateId = await response.json()
-                if (isDuplicateId) alert('중복')
-                else alert('사용가능한 아이디 입니다.')
-                this.isDuplicateId = isDuplicateId
+                if (isDuplicateId) alert('중복된 아이디 입니다.')
+                else {
+                    alert('사용가능한 아이디 입니다.')
+                    this.isDuplicateId = isDuplicateId
+                }
             },
             validatePasswords() {
                 this.passwordsMatch = this.password === this.confirmPassword
             },
-            sendVerificationCode() {
-                // 휴대폰 인증 코드 전송 로직 작성
-                // 사용자의 휴대폰 번호로 인증 코드를 전송하는 기능을 구현
+            async sendVerificationCode() {
+                if (!this.phoneNumber) return alert('휴대폰 번호를 입력해 주세요.')
+                const response = await fetch('/api/auth/send-code?phoneNumber=' + this.phoneNumber)
+                const isSuccess = await response.json()
+                if (isSuccess) alert('인증 코드를 정상적으로 발송하였습니다.')
 
                 // 인증 코드 입력란 보이도록 설정
-                this.verificationCodeVisible = true;
+                this.verificationCodeVisible = true
             },
-            checkVerificationCode() {
-
+            async checkVerificationCode() {
+                const response = await fetch('/api/auth/check-code?verificationCode=' + this.verificationCode)
+                const isverification = await response.json()
+                if (isverification) {
+                    alert('인증에 성공 하였습니다.')
+                    this.isVerificationCode = true
+                    fetch('/api/auth/remove-session')
+                }
+                else {
+                    alert('인증에 실패 하였습니다.')
+                    this.isVerificationCode = false
+                }
             },
             isDisabled() {
-                let result = true
+                let disabled = true
                 // 로직 작성
-                return result
+                if (this.isValidateId && !this.isDuplicateId && this.passwordsMatch && this.isVerificationCode) disabled = false
+
+                return disabled
+            },
+            handleSubmit() {
+                const member = {
+                    userId: this.userId,
+                    password: this.password,
+                    phoneNumber: this.phoneNumber
+                }
+                console.log(member);
+                console.log(JSON.stringify(member));
+                fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(member)
+                })
             }
         }
     });

@@ -17,20 +17,20 @@ public class MemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    
     @Test
     void memberCRD() {
         Member member = new Member();
-        member.setUsername("testuser");
-        member.setPassword("testPassword");
+        member.setUserId("testuser100");
+        member.setPassword("testPassword100");
+        member.setPhoneNumber("01011112222");
 
         Member saveMember = memberRepository.save(member);
         
         assertThat(saveMember.getId()).isNotNull();
-        assertThat(saveMember.getUsername()).isEqualTo(member.getUsername());
+        assertThat(saveMember.getUserId()).isEqualTo(member.getUserId());
         assertThat(saveMember.getPassword()).isEqualTo(member.getPassword());
 
-        Member foundMember = memberRepository.findByUsername(member.getUsername());
+        Member foundMember = memberRepository.findByUserId(member.getUserId());
         assertThat(foundMember).isNotNull();
         assertThat(foundMember.getPassword()).isEqualTo(member.getPassword());
 
