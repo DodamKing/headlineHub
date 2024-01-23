@@ -5,7 +5,13 @@ import java.util.Random;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,16 +28,39 @@ import com.headlinehub.newsscraper.service.MemberService;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final MemberService memberService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public AuthController(MemberService memberService) {
         this.memberService = memberService;
     }
 
+    @PostMapping("/login")
+    public boolean login(@RequestBody Member member) {
+        String userId = member.getUserId();
+        String password = member.getPassword();
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userId, password));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return true;
+        }
+        catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+    }
+
     @PostMapping("/signup")
-    public void signup(@RequestBody Member member) {
-        System.out.println("들어오긴 하냐");
-        System.out.println(member);
-        memberService.saveMember(member);
+    public ResponseEntity<Boolean> signup(@RequestBody Member member) {
+        try {
+            memberService.saveMember(member);
+            return ResponseEntity.ok(true);
+        } 
+        catch (Exception e) {
+            System.err.println(e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        }
     }
     
 

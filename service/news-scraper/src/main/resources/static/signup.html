@@ -132,19 +132,24 @@
 
                 return disabled
             },
-            handleSubmit() {
+            async handleSubmit() {
                 const member = {
                     userId: this.userId,
                     password: this.password,
                     phoneNumber: this.phoneNumber
                 }
-                console.log(member);
-                console.log(JSON.stringify(member));
-                fetch('/api/auth/signup', {
+                
+                const response = await fetch('/api/auth/signup', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(member)
                 })
+                
+                if (response.ok) {
+                    alert('회원가입 되었습니다. 로그인 해주세요.')
+                    location.href = '/login'
+                } 
+                else alert('회원가입 실패')
             }
         }
     });

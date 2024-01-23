@@ -1,5 +1,8 @@
 package com.headlinehub.newsscraper.service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +24,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void saveMember(Member member) {
         member.setPassword(passwordEncoder.encode(member.getPassword()));
+        member.setRole("ROLE_USER");
+
+        Instant currentInstant = Instant.now();
+        ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
+        ZonedDateTime koreaDateTime = currentInstant.atZone(koreaZoneId);
+        member.setLoginedAt(koreaDateTime.toInstant());
+
         memberRepository.save(member);
     }
 
