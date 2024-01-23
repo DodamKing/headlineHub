@@ -26,6 +26,9 @@ public class MemberServiceImpl implements MemberService {
         member.setPassword(passwordEncoder.encode(member.getPassword()));
         member.setRole("ROLE_USER");
 
+        String phoneNumber = member.getPassword();
+        member.setPassword(phoneNumber.replaceAll("[-\\s]", ""));
+
         Instant currentInstant = Instant.now();
         ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime koreaDateTime = currentInstant.atZone(koreaZoneId);

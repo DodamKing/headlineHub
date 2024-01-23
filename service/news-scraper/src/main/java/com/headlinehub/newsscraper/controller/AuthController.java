@@ -2,6 +2,10 @@ package com.headlinehub.newsscraper.controller;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
+
 
 import javax.servlet.http.HttpSession;
 
@@ -12,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,6 +68,16 @@ public class AuthController {
         }
     }
     
+    @GetMapping("/login-status")
+    public ResponseEntity<Map<String, Object>> getSessioninfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("userId", ((UserDetails) authentication.getPrincipal()).getUsername().toString());
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.ok(Collections.singletonMap("userId", "false"));
+    }
 
     @GetMapping("/user-list")
     public List<Member> memberList() {

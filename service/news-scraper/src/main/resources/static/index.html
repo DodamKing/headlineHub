@@ -5,6 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/dropdown.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
         body {
             background-color: #121212; /* 배경을 어두운 색상으로 설정 */
@@ -42,7 +47,23 @@
 <body>
     <div id="app" class="container mt-4">
         <div class="d-flex justify-content-end login-button">
-            <button type="button" class="btn btn-outline-light" @click="redirectToLogin">로그인</button>
+            <button v-if="!isLoggedIn" type="button" class="btn btn-outline-light" @click="redirectToLogin()">로그인</button>
+            <div v-else class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="custom-dropdown">
+                        <div class="custom-dropdown-circle">
+                            <p class="custom-dropdown-circle-text">{{ nickName.charAt(0) }}</p>
+                        </div>
+                    <div class="custom-dropdown-rectangle">
+                        <p class="custom-dropdown-rectangle-text">{{ nickName }}</p>
+                    </div>
+                    </div>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">계정 정보</a>
+                    <a class="dropdown-item" href="/logout">로그아웃</a>
+                </div>
+            </div>
         </div>
         <h1 @click="location.reload()" class="mb-4">Headline Hub</h1>
         <div class="row">
@@ -77,11 +98,17 @@
             data: {
                 headlines: [],
                 keyword: '',
-                searchResults: []
+                searchResults: [],
+                loggedInId: '',
+                isLoggedIn: false,
+                nickName: '안정된프레첼'
             },
             mounted() {
                 // 뉴스 헤드라인 가져오기
                 this.fetchHeadlines();
+
+                // 로그인 여부 판별
+                this.checkLoginStatus();
             },
             methods: {
                 async fetchHeadlines() {
@@ -96,6 +123,19 @@
                 },
                 redirectToLogin() {
                     window.location.href = '/login';
+                },
+                async checkLoginStatus() {
+                    const response = await fetch('/api/auth/login-status')
+                    const data = await response.json()
+                    const userId = data.userId
+                    if (userId !== 'false') {
+                        this.loggedInId = userId
+                        this.isLoggedIn = true
+                    }
+                    else {
+                        this.loggedInId = ''
+                        this.isLoggedIn = false
+                    }
                 }
             }
         });

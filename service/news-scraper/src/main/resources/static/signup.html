@@ -105,7 +105,7 @@
             },
             async sendVerificationCode() {
                 if (!this.phoneNumber) return alert('휴대폰 번호를 입력해 주세요.')
-                const response = await fetch('/api/auth/send-code?phoneNumber=' + this.phoneNumber)
+                const response = await fetch('/api/auth/send-code?phoneNumber=' + this.phoneNumber.replace(/[-\s]/g, ''))
                 const isSuccess = await response.json()
                 if (isSuccess) alert('인증 코드를 정상적으로 발송하였습니다.')
 
@@ -136,7 +136,7 @@
                 const member = {
                     userId: this.userId,
                     password: this.password,
-                    phoneNumber: this.phoneNumber
+                    phoneNumber: this.phoneNumber.replace(/[-\s]/g, '')
                 }
                 
                 const response = await fetch('/api/auth/signup', {
