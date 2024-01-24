@@ -48,20 +48,19 @@
     <div id="app" class="container mt-4">
         <div class="d-flex justify-content-end login-button">
             <button v-if="!isLoggedIn" type="button" class="btn btn-outline-light" @click="redirectToLogin()">로그인</button>
-            <div v-else class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <div class="custom-dropdown">
-                        <div class="custom-dropdown-circle">
-                            <p class="custom-dropdown-circle-text">{{ nickName.charAt(0) }}</p>
-                        </div>
-                    <div class="custom-dropdown-rectangle">
-                        <p class="custom-dropdown-rectangle-text">{{ nickName }}</p>
+            <div v-else class="row">
+                <div class="col custom-dropdown-circle">
+                    <p class="custom-dropdown-circle-text">{{ loggedInId.charAt(0) }}</p>
+                </div>
+                <div class="col dropdown">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ loggedInId }}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">계정 정보</a>
+                        <a class="dropdown-item" href="#">스크랩</a>
+                        <a class="dropdown-item" href="/logout">로그아웃</a>
                     </div>
-                    </div>
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">계정 정보</a>
-                    <a class="dropdown-item" href="/logout">로그아웃</a>
                 </div>
             </div>
         </div>
@@ -91,7 +90,8 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script>
         new Vue({
             el: '#app',
@@ -101,7 +101,6 @@
                 searchResults: [],
                 loggedInId: '',
                 isLoggedIn: false,
-                nickName: '안정된프레첼'
             },
             mounted() {
                 // 뉴스 헤드라인 가져오기

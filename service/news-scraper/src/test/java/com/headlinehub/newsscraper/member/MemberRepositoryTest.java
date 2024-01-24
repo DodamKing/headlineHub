@@ -18,7 +18,7 @@ public class MemberRepositoryTest {
     private MemberRepository memberRepository;
 
     @Test
-    void memberCRD() {
+    public void memberCRD() {
         Member member = new Member();
         member.setUserId("testuser100");
         member.setPassword("testPassword100");
