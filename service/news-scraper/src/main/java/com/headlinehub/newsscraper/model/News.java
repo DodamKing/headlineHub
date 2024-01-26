@@ -1,5 +1,7 @@
 package com.headlinehub.newsscraper.model;
 
+import java.time.Instant;
+
 import org.springframework.data.annotation.Id;
 
 import lombok.Data;
@@ -12,4 +14,5 @@ public class News {
     private String headLine;
     private String link;
     private String content;
+    private Instant createdAt;
 }

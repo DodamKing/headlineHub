@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/dropdown.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -22,7 +23,7 @@
         h1, h2, h3, h4, h5, h6 {
             color: #ffffff; /* 제목 글자 색상을 흰색으로 설정 */
         }
-        #app h1 {
+        #app h1 span {
             cursor: pointer;
         }
         #app {
@@ -58,20 +59,21 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="#">계정 정보</a>
-                        <a class="dropdown-item" href="#">스크랩</a>
+                        <a @click="myScrap()" class="dropdown-item">스크랩</a>
                         <a class="dropdown-item" href="/logout">로그아웃</a>
                     </div>
                 </div>
             </div>
         </div>
-        <h1 @click="location.reload()" class="mb-4">Headline Hub</h1>
+        <h1 class="mb-4"><span @click="reloadPage()">Headline Hub</span></h1>
         <div class="row">
             <div class="col-md-6">
                 <h2>Top Headlines</h2>
                 <ul class="list-group">
-                    <li v-for="headline in headlines" :key="headline.title"  class="list-group-item d-flex justify-content-between align-items-center">
-                        <a :href="headline.link" class="text-decoration-none text-dark"><strong>{{ headline.title }}</strong></a>
-                        <a :href="headline.link"><img v-if="headline.img" :src="headline.img" alt="Headline Image" class="img-fluid mt-2" style="max-height: 100px; max-width: 100%;"></a>
+                    <li v-for="headline in headlines" :key="headline.link"  class="list-group-item d-flex justify-content-between align-items-center">
+                        <i v-if="isLoggedIn" @click="doNewsScrap(headline.title, headline.link)" class="far fa-star btn" style="color: red;" title="스크랩"></i>
+                        <a :href="headline.link" target="_blank" class="text-decoration-none text-dark"><strong>{{ headline.title }}</strong></a>
+                        <a :href="headline.link" target="_blank"><img v-if="headline.img" :src="headline.img" alt="Headline Image" class="img-fluid mt-2" style="max-height: 100px; max-width: 100%;"></a>
                     </li>
                 </ul>
             </div>
@@ -83,7 +85,7 @@
                 <ul>
                     <li v-for="result in searchResults" :key="result.title" class="search-result">
                         <a :href="result.link" class="text-decoration-none"><strong>{{ result.title }}</strong></a>
-                        <a :href="result.link"><img v-if="result.img" :src="result.img" alt="Headline Image" class="img-fluid mt-2" style="max-height: 100px; max-width: 100%;"></a>
+                        <i v-if="isLoggedIn" @click="doNewsScrap()" class="far fa-star btn" style="color: yellow;" title="스크랩"></i>
                     </li>
                 </ul>
             </div>
@@ -101,6 +103,7 @@
                 searchResults: [],
                 loggedInId: '',
                 isLoggedIn: false,
+                userObjectId: ''
             },
             mounted() {
                 // 뉴스 헤드라인 가져오기
@@ -130,11 +133,36 @@
                     if (userId !== 'false') {
                         this.loggedInId = userId
                         this.isLoggedIn = true
+                        this.userObjectId = data._id
                     }
                     else {
                         this.loggedInId = ''
                         this.isLoggedIn = false
+                        this.userObjectId = ''
                     }
+                },
+                reloadPage() {
+                    window.location.reload()
+                },
+                doNewsScrap(title, link) {
+                    fetch('/api/news/' + this.userObjectId, {
+                        method: 'post',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({title, link})
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result) alert('스크랩 되었습니다.')
+                        else alert('스크랩에 실패하였습니다.')
+                    })
+                    .catch(err => {
+                        alert('오류가 발생하였습니다.')
+                        console.log(err);
+                    })
+                },
+                myScrap() {
+                    // fetch('/api/news/' + this.userObjectId)
+                    location.href = '/api/news/' + this.userObjectId
                 }
             }
         });

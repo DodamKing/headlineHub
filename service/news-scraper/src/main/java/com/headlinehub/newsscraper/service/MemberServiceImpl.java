@@ -32,7 +32,7 @@ public class MemberServiceImpl implements MemberService {
         Instant currentInstant = Instant.now();
         ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime koreaDateTime = currentInstant.atZone(koreaZoneId);
-        member.setLoginedAt(koreaDateTime.toInstant());
+        member.setCreatedAt(koreaDateTime.toInstant());
 
         memberRepository.save(member);
     }

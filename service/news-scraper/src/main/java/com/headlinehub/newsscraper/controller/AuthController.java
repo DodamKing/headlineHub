@@ -1,11 +1,10 @@
 package com.headlinehub.newsscraper.controller;
 
-import java.util.List;
-import java.util.Random;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Collections;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpSession;
 
@@ -73,7 +72,9 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             Map<String, Object> response = new HashMap<>();
-            response.put("userId", ((UserDetails) authentication.getPrincipal()).getUsername().toString());
+            String userId = ((UserDetails) authentication.getPrincipal()).getUsername().toString();
+            response.put("userId", userId);
+            response.put("_id", memberService.findByUserId(userId).getId());
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.ok(Collections.singletonMap("userId", "false"));

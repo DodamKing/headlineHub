@@ -10,6 +10,7 @@ import com.headlinehub.newsscraper.repository.NewsRepository;
 
 
 @SpringBootTest
+@SuppressWarnings("all")
 public class NewsRepositoryTest {
     
     @Autowired

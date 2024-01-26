@@ -15,23 +15,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .authorizeRequests()
-                .antMatchers("/img/**", "/css/**").permitAll()
-                .antMatchers("/", "/api/auth/**", "/login", "/signup").permitAll()
-                .anyRequest().authenticated()
-                .and()
-            .formLogin()
-                .loginPage("/login")
-                // .usernameParameter("userId")
-                // .passwordParameter("password")
-                // .loginProcessingUrl("/api/auth/login")
-                // .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/")
-                .and()
-            .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/");
+                .csrf(csrf -> csrf.disable())
+                .authorizeRequests(requests -> requests
+                        .antMatchers("/img/**", "/css/**").permitAll()
+                        .antMatchers("/", "/api/auth/**", "/login", "/signup").permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(login -> login
+                        .loginPage("/login")
+                        // .usernameParameter("userId")
+                        // .passwordParameter("password")
+                        // .loginProcessingUrl("/api/auth/login")
+                        // .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/"))
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/"));
     }
 
     @Bean
