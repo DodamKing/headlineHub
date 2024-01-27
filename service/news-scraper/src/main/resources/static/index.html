@@ -59,7 +59,7 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="#">계정 정보</a>
-                        <a @click="myScrap()" class="dropdown-item">스크랩</a>
+                        <a @click="myScrap()" href="#" class="dropdown-item">스크랩</a>
                         <a class="dropdown-item" href="/logout">로그아웃</a>
                     </div>
                 </div>
@@ -148,11 +148,12 @@
                     fetch('/api/news/' + this.userObjectId, {
                         method: 'post',
                         headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({title, link})
+                        body: JSON.stringify({'headLine': title, link})
                     })
                     .then(response => response.json())
                     .then(result => {
-                        if (result) alert('스크랩 되었습니다.')
+                        if (result === 0) alert('이미 스크랩 되었습니다.')
+                        else if (result === 1) alert('스크랩 되었습니다.')
                         else alert('스크랩에 실패하였습니다.')
                     })
                     .catch(err => {

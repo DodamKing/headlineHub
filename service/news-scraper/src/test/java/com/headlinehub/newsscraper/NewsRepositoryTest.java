@@ -1,5 +1,7 @@
 package com.headlinehub.newsscraper;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +33,25 @@ public class NewsRepositoryTest {
 
     @Test
     public void NewsReadTest() {
-        News news = newsRepository.findByuserObjectId("65b12ff62ed75a6d6dd423ae");
+        List<News> newsList = newsRepository.findByUserObjectId("65b12ff62ed75a6d6dd423ae");
         
-        Assertions.assertNotNull(news);
+        Assertions.assertNotNull(newsList);
     }
+
+    // @Test
+    // public void readByLinkTest() {
+    //     News news = newsRepository.findByLink("가짜 링크");
+    //     Assertions.assertNotNull(news);
+    // }
     
     @Test
     public void NewsDeleteTest() {
-        News news = newsRepository.findByuserObjectId("65b12ff62ed75a6d6dd423ae");
-        String id = news.getId();
-        newsRepository.deleteById(id);
-        Assertions.assertFalse(newsRepository.existsById(id));
+        List<News> newsList = newsRepository.findByUserObjectId("65b12ff62ed75a6d6dd423ae");
+
+        for (News news : newsList) {
+            String id = news.getId();
+            newsRepository.deleteById(id);
+            Assertions.assertFalse(newsRepository.existsById(id));
+        }
     }
 }

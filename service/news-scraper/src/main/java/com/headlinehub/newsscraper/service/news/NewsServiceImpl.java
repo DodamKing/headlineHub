@@ -3,6 +3,7 @@ package com.headlinehub.newsscraper.service.news;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,12 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public News findByuserObjectId(String userObjectId) {
-        return newsRepository.findByuserObjectId(userObjectId);
+    public List<News> findByUserObjectId(String userObjectId) {
+        return newsRepository.findByUserObjectId(userObjectId);
+    }
+
+    @Override
+    public News findByLink(String link) {
+        return newsRepository.findByLink(link);
     }
 }
