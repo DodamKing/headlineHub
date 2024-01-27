@@ -85,7 +85,7 @@
                 <ul>
                     <li v-for="result in searchResults" :key="result.title" class="search-result">
                         <a :href="result.link" class="text-decoration-none"><strong>{{ result.title }}</strong></a>
-                        <i v-if="isLoggedIn" @click="doNewsScrap()" class="far fa-star btn" style="color: yellow;" title="스크랩"></i>
+                        <i v-if="isLoggedIn" @click="doNewsScrap(result.title, result.link)" class="far fa-star btn" style="color: yellow;" title="스크랩"></i>
                     </li>
                 </ul>
             </div>
