@@ -1,8 +1,6 @@
 package com.headlinehub.newsscraper.service.news;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,10 +19,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public News saveNews(News news) {
-        Instant currentInstant = Instant.now();
-        ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
-        ZonedDateTime koreaDateTime = currentInstant.atZone(koreaZoneId);
-        news.setCreatedAt(koreaDateTime.toInstant());
+        news.setCreatedAt(Instant.now());
         return newsRepository.save(news);
     }
 
